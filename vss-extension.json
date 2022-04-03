@@ -1,0 +1,71 @@
+{
+    "manifestVersion": 1,
+    "id": "ado-semantic-release",
+    "version": "0.0.1",
+    "name": "Azure DevOps Semantic Release",
+    "publisher": "kharkevich",
+    "public": true,
+    "description": "Make up Semantic Release and conventional commits based changelog in Azure DevOps",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services.Cloud"
+        }
+    ],
+    "icons": {
+        "default": "images/icon.png"
+    },
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "tags": [
+        "azure",
+        "changelog",
+        "conventionalcommits",
+        "deployment",
+        "release",
+        "semver"
+    ],
+    "scopes": [
+        "vso.release"
+    ],
+    "content": {
+        "details": {
+            "path": "README.md"
+        },
+        "license": {
+            "path": "LICENSE"
+        }
+    },
+    "links": {
+        "getstarted": {
+            "uri": "https://github.com/kharkevich/ado-semantic-release"
+        },
+        "support": {
+            "uri": "https://github.com/kharkevich/ado-semantic-release/issues"
+        },
+        "privacypolicy": {
+            "uri": "https://kharkevich.org/ado-extensions/privacy-terms/"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/kharkevich/ado-semantic-release"
+    },
+    "contributions": [
+        {
+            "id": "ado-release-notes-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "release-notes"
+            }
+        }
+    ],
+    "files": [
+        {
+            "path": "tasks/release-notes/v1"
+        }
+    ]
+}

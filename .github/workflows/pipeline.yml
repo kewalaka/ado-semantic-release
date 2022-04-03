@@ -1,0 +1,31 @@
+---
+name: build and publish ADO extension
+
+on:
+  push:
+    branches: [master]
+jobs:
+  build:
+    name: build and publish ADO extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn global add tfx-cli
+      # src/release-notes/v1
+      - run: yarn install --frozen-lockfile --production
+        working-directory: src/release-notes/v1
+      - run: yarn build
+        working-directory: src/release-notes/v1
+      # src/release-notes/v1
+      - run: tfx extension create
+      - run: tfx login -u ${URL} -t ${TOKEN}
+        env:
+          URL: ${{ secrets.URL }}
+          TOKEN: ${{ secrets.TOKEN }}
+      - run: tfx extension publish --token ${TOKEN} --no-wait-validation
+        env:
+          URL: ${{ secrets.URL }}
+          TOKEN: ${{ secrets.TOKEN }}
