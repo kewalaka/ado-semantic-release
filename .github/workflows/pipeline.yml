@@ -14,12 +14,12 @@ jobs:
         with:
           node-version: "16"
       - run: yarn global add tfx-cli
-      # src/release-notes/v1
+      # tasks/release-notes/v1
       - run: yarn install --frozen-lockfile --production
-        working-directory: src/release-notes/v1
+        working-directory: tasks/release-notes/v1
       - run: yarn build
-        working-directory: src/release-notes/v1
-      # src/release-notes/v1
+        working-directory: tasks/release-notes/v1
+      # tasks/release-notes/v1
       - run: tfx extension create
       - run: tfx login -u ${URL} -t ${TOKEN}
         env:

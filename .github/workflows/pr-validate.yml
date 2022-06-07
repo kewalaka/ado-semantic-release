@@ -13,9 +13,9 @@ jobs:
       with:
         node-version: '16'
     - run: yarn global add tfx-cli mocha
-    # src/release-notes/v1
+    # tasks/release-notes/v1
     - run: yarn install --frozen-lockfile
-      working-directory: src/release-notes/v1
+      working-directory: tasks/release-notes/v1
     - run: yarn test
-      working-directory: src/release-notes/v1
-    # src/release-notes/v1
+      working-directory: tasks/release-notes/v1
+    # tasks/release-notes/v1
