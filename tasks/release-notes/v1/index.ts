@@ -1,9 +1,12 @@
 import tl = require('azure-pipelines-task-lib/task');
+import tr = require('azure-pipelines-task-lib/toolrunner');
 import { commitDetails, conventionalCommitDetails, releaseNoteItem, kv } from './interfaces'
 import { commitTypeList, commitType } from './constants';
 import fs = require('fs');
 import path = require('path');
 import handlebars = require('handlebars');
+
+const execOpts: tr.IExecSyncOptions = { silent: true };
 
 async function run() {
     try {
@@ -60,7 +63,7 @@ async function run() {
 // get first commit in git repository
 async function getFirstCommit(): Promise<string | null> {
     try {
-        const output = tl.execSync('git', ['rev-list', '--max-parents=0', 'HEAD']);
+        const output = tl.execSync('git', ['rev-list', '--max-parents=0', 'HEAD'], execOpts);
         console.log(output);
         return output.stdout.trim();
     }
@@ -77,11 +80,11 @@ async function getFirstCommit(): Promise<string | null> {
 // get latest tag in git repository
 async function getLatestTag(): Promise<string | null> {
     try {
-        if (tl.execSync('git', ['tag']).stdout.trim() == "") {
+        if (tl.execSync('git', ['tag']).stdout.trim() == "", execOpts) {
             tl.debug("No tags found");
             return null;
         } else {
-            return (tl.execSync('git', ['describe', '--abbrev=0', '--tags'])).stdout.trim();
+            return (tl.execSync('git', ['describe', '--abbrev=0', '--tags'], execOpts)).stdout.trim();
         }
     }
     catch (err) {
@@ -97,7 +100,7 @@ async function getLatestTag(): Promise<string | null> {
 // get list of commits between two tags
 async function getCommitsBetweenTags(start: string, end: string): Promise<Array<string>> {
     try {
-        const output = tl.execSync('git', ['rev-list', start + '..' + end]);
+        const output = tl.execSync('git', ['rev-list', start + '..' + end], execOpts);
         // split output into array
         const lines = output.stdout.split('\n').filter(line => line.length > 0);
         return lines;
@@ -122,8 +125,8 @@ async function getCommitDetails(commit: string): Promise<commitDetails> {
             '"author": { "name": "%aN", "email": "%aE", "date": "%aD" }, ' +
             '"commiter": { "name": "%cN", "email": "%cE", "date": "%cD" }}';
         const formatBody = '%b';
-        const commitDetailsRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + format, commit]);
-        const commitBodyRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatBody, commit]);
+        const commitDetailsRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + format, commit], execOpts);
+        const commitBodyRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatBody, commit], execOpts);
         const commitDetailsJson = JSON.parse(commitDetailsRaw.stdout);
         // replace newlines in commit body with \n
         const commitBody = commitBodyRaw.stdout.replace(/\n/g, '\\n');
