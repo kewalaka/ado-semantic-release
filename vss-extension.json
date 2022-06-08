@@ -53,13 +53,13 @@
     },
     "contributions": [
         {
-            "id": "ado-release-notes-task",
+            "id": "release-notes",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
-                "name": "release-notes"
+                "name": "tasks/release-notes"
             }
         }
     ],
