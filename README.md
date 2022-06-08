@@ -9,14 +9,14 @@ Generate Release notes based on conventional commits by pipeline step
 Azure pipelines (default parameters):
 ```yaml
 steps:
-- task: kharkevich.ado-semantic-release.tasks.release-notes@1
+- task: release-notes@1
   displayName: 'Release notes'
 ```
 
 Azure pipelines (all parameters):
 ```yaml
 steps:
-- task: kharkevich.ado-semantic-release.tasks.release-notes@1
+- task: release-notes@1
   displayName: 'Release notes'
   inputs:
     releaseNotesFrom: 1.0.0
