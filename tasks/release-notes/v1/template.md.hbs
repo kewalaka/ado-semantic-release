@@ -2,75 +2,62 @@
 # {{version}}
 {{/if}}
 {{#if breaking}}
+
 ## Breaking changes
-
 {{#each breaking}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}
 {{#if features}}
+
 ## Features
-
 {{#each features}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}
 {{#if fixes}}
+
 ## Bug fixes
-
 {{#each fixes}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}
 {{#if chore}}
+
 ## Chore
-
 {{#each chore}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}
-
 {{#if ci}}
+
 ## CI
-
 {{#each ci}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}
 {{#if other}}
+
 ## Other
-
 {{#each other}}
-    {{#if scope}}{{scope:}}{{/if}}### {{subject}}
-    {{#if body}}
-
-        {{newline body}}
-
-    {{/if}}
+{{#if scope}}{{scope:}}{{/if}}### {{subject}}
+{{#if body}}
+{{newline body}}
+{{/if}}
 {{/each}}
 {{/if}}

@@ -225,7 +225,7 @@ async function renderTemplate(releaseNote: any, releaseNotesTemplatePath: string
     const template = fs.readFileSync(releaseNotesTemplatePath, 'utf8');
     handlebars.registerHelper('newline', function (text) {
         text = handlebars.Utils.escapeExpression(text);
-        text = text.replace(/(\\n)/gm, '\n        ');
+        text = text.replace(/(\\n)/gm, '\n');
         return new handlebars.SafeString(text);
     });
     const templateRender = handlebars.compile(template);
