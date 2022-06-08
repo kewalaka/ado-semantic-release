@@ -157,7 +157,7 @@ function getCommitType(subject: string): conventionalCommitDetails {
             detailsBreaking = true;
         }
         let detailsType = commitTypeMatch.groups.type;
-        if (!commitTypeList.includes(detailsType)) {
+        if (!commitTypeList.includes(detailsType) || detailsSubject === undefined) {
             detailsType = "other";
             detailsScope = "";
             detailsSubject = subject;
@@ -178,9 +178,9 @@ function getCommitType(subject: string): conventionalCommitDetails {
         };
     }
     return {
-        type: "n/a",
+        type: "other",
         scope: "",
-        subject: "",
+        subject: subject,
         breaking: false
     }
 }
