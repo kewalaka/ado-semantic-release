@@ -64,7 +64,6 @@ async function run() {
 async function getFirstCommit(): Promise<string | null> {
     try {
         const output = tl.execSync('git', ['rev-list', '--max-parents=0', 'HEAD'], execOpts);
-        console.log(output);
         return output.stdout.trim();
     }
     catch (err) {
@@ -80,7 +79,7 @@ async function getFirstCommit(): Promise<string | null> {
 // get latest tag in git repository
 async function getLatestTag(): Promise<string | null> {
     try {
-        if (tl.execSync('git', ['tag']).stdout.trim() == "", execOpts) {
+        if (tl.execSync('git', ['tag'], execOpts).stdout.trim() == "") {
             tl.debug("No tags found");
             return null;
         } else {
