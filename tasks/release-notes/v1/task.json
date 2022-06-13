@@ -4,13 +4,13 @@
     "name": "release-notes",
     "friendlyName": "Release Notes Generator",
     "description": "Generates release notes by collecting commit messages between git tag and current commit",
-    "helpMarkDown": "[More Information](https://github.com/kharkevich/ado-semantic-release)",
+    "helpMarkDown": "https://github.com/kharkevich/ado-semantic-release",
     "category": "Utility",
     "author": "Alexander Kharkevich",
     "version": {
         "Major": 1,
-        "Minor": 0,
-        "Patch": 6
+        "Minor": 1,
+        "Patch": 0
     },
     "instanceNameFormat": "ReleaseNotes",
     "inputs": [
@@ -43,11 +43,11 @@
             "helpMarkDown": "The path to the release notes template. If not specified, embedded template (template.md.hbs) will used."
         },
         {
-            "name": "releaseNotesVersion",
+            "name": "setVersionToGitTag",
             "type": "string",
-            "label": "Release notes version",
+            "label": "Set version to git tag",
             "required": false,
-            "helpMarkDown": "The version of the release notes. Will be omitted if not specified."
+            "helpMarkDown": "Set release version to git tag. If not specified, the version will not be set."
         }
     ],
     "execution": {

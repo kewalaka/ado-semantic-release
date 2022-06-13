@@ -23,7 +23,6 @@ steps:
     releaseNotesTo: HEAD
     releaseNotesPath: docs/release-notes.md 
     releaseNotesTemplatePath: src/main/resources/release-notes-template.md
-    releaseNotesVersion: 2.0.0
 ```
 
 See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for specification.

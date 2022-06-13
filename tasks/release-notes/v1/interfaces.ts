@@ -1,5 +1,10 @@
-export interface kv {
-    [key: string]: string;
+export interface parameters {
+    releaseNotesFrom: string;
+    releaseNotesTo: string;
+    releaseNotesPath: string;
+    releaseNotesTemplatePath: string;
+    releaseNotesVersion: string;
+    setVersionToGitTag: boolean;
 }
 
 interface authorDetails {

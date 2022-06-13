@@ -1,23 +1,25 @@
 import tl = require('azure-pipelines-task-lib/task');
 import tr = require('azure-pipelines-task-lib/toolrunner');
-import { commitDetails, conventionalCommitDetails, releaseNoteItem, kv } from './interfaces'
+import { commitDetails, conventionalCommitDetails, releaseNoteItem, parameters } from './interfaces'
 import { commitTypeList, commitType } from './constants';
 import fs = require('fs');
 import path = require('path');
 import handlebars = require('handlebars');
+import semver = require('semver');
 
 const execOpts: tr.IExecSyncOptions = { silent: true };
 
 async function run() {
     try {
-        let parameters: kv = {}
+        let parameters: parameters;
         try {
             parameters = {
                 releaseNotesFrom: tl.getInput('releaseNotesFrom') || await getNotesFrom(),
                 releaseNotesTo: tl.getInput('releaseNotesTo') || 'HEAD',
                 releaseNotesPath: tl.getInput('releaseNotesPath') || 'RELEASE_NOTES.md',
                 releaseNotesTemplatePath: tl.getInput('releaseNotesTemplatePath') || path.join(__dirname, 'template.md.hbs'),
-                releaseNotesVersion: tl.getInput('releaseNotesVersion') || '',
+                releaseNotesVersion: semver.valid(tl.getInput('releaseNotesTo')) || semver.valid(await getLatestTag()) || '1.0.0',
+                setVersionToGitTag: tl.getBoolInput('setVersionGitTag') || false
             }
         } catch (err) {
             if (err instanceof Error) {
@@ -29,6 +31,10 @@ async function run() {
             }
         }
         const commits: Array<string> = await getCommitsBetweenTags(parameters.releaseNotesFrom, parameters.releaseNotesTo);
+        if (commits.length == 0) {
+            tl.setResult(tl.TaskResult.Failed, "No commits found. Please check releaseNotesFrom and releaseNotesTo parameters.");
+            return;
+        }
         // iterate over commits to get commit details
         let allCommitDetails: Array<commitDetails> = [];
         for (const commit of commits) {
@@ -48,6 +54,17 @@ async function run() {
             other: await getReleaseNoteBlock(allCommitDetails, commitType.other),
             breaking: await getReleaseNoteBlock(allCommitDetails, undefined, true),
         }
+        // if releaseNote.breaking is not empty use calculateVersion with major changes
+        if (releaseNote.breaking != null && releaseNote.breaking.length > 0) {
+            releaseNote.version = await calculateVersion(releaseNote.version, 'major');
+        } else if (releaseNote.features != null && releaseNote.features.length > 0) {
+            releaseNote.version = await calculateVersion(releaseNote.version, 'minor');
+        } else {
+            releaseNote.version = await calculateVersion(releaseNote.version, 'patch');
+        }
+        if (parameters.setVersionToGitTag) {
+            await setVersionToGitTag(releaseNote.version);
+        }
         await writeReleaseNote(await renderTemplate(releaseNote, parameters.releaseNotesTemplatePath), parameters.releaseNotesPath);
         tl.TaskResult.Succeeded;
     }
@@ -61,7 +78,7 @@ async function run() {
 }
 
 // get first commit in git repository
-async function getFirstCommit(): Promise<string | null> {
+async function getFirstCommit(): Promise<string | undefined> {
     try {
         const output = tl.execSync('git', ['rev-list', '--max-parents=0', 'HEAD'], execOpts);
         return output.stdout.trim();
@@ -72,16 +89,14 @@ async function getFirstCommit(): Promise<string | null> {
         } else {
             tl.setResult(tl.TaskResult.Failed, "Unknown error");
         }
-        return null;
     }
 }
 
 // get latest tag in git repository
-async function getLatestTag(): Promise<string | null> {
+async function getLatestTag(): Promise<string | undefined> {
     try {
         if (tl.execSync('git', ['tag'], execOpts).stdout.trim() == "") {
             tl.debug("No tags found");
-            return null;
         } else {
             return (tl.execSync('git', ['describe', '--abbrev=0', '--tags'], execOpts)).stdout.trim();
         }
@@ -92,7 +107,6 @@ async function getLatestTag(): Promise<string | null> {
         } else {
             tl.setResult(tl.TaskResult.Failed, "Unknown error");
         }
-        return null;
     }
 }
 
@@ -249,8 +263,8 @@ async function writeReleaseNote(releaseNote: string, filePath: string): Promise<
 async function getNotesFrom(): Promise<string> {
     const firstCommit = await getFirstCommit();
     const latestTag = await getLatestTag();
-    if (latestTag === null) {
-        if (firstCommit != null) {
+    if (latestTag === undefined) {
+        if (firstCommit != undefined) {
             return firstCommit;
         } else {
             tl.setResult(tl.TaskResult.Failed, "Cannot find first commit or latest tag");
@@ -267,18 +281,36 @@ async function calculateVersion(version: string, changes: string): Promise<strin
         version = version.substring(1, version.length);
     }
     // switch over changes, if major bump major, minor bump minor, patch bump patch
-    const semver = require('semver');
-    const semverVersion = semver.parse(version);
-    switch (changes) {
-        case "major":
-            return semverVersion.major + 1 + ".0.0";
-        case "minor":
-            return semverVersion.major + "." + semverVersion.minor + 1 + ".0";
-        case "patch":
-            return semverVersion.major + "." + semverVersion.minor + "." + semverVersion.patch + 1;
-        default:
-            tl.setResult(tl.TaskResult.Failed, "Unknown change type");
-            return "";
+    if (semver.valid(version)) {
+        const semverVersion = semver.parse(version);
+        if (semverVersion != null) {
+            switch (changes) {
+                case "major":
+                    return [++semverVersion.major, "0", "0"].join(".");
+                case "minor":
+                    return [semverVersion.major, ++semverVersion.minor, "0"].join(".");
+                case "patch":
+                    return [semverVersion.major, semverVersion.minor, ++semverVersion.patch].join(".");
+                default:
+                    tl.setResult(tl.TaskResult.Failed, "Unknown change type");
+                    return "";
+            }
+        }
+    }
+    tl.warning("Invalid version, using default version");
+    return "1.0.0";
+}
+
+async function setVersionToGitTag(version:string): Promise<void> {
+    try {
+        tl.execSync('git', ['tag', version], execOpts);
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            tl.setResult(tl.TaskResult.Failed, err.message);
+        } else {
+            tl.setResult(tl.TaskResult.Failed, "Unknown error");
+        }
     }
 }
 
