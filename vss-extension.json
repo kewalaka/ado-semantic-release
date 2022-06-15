@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "ado-semantic-release",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Azure DevOps Semantic Release",
     "publisher": "kharkevich",
     "public": true,
@@ -61,11 +61,24 @@
             "properties": {
                 "name": "tasks/release-notes"
             }
+        },
+        {
+            "id": "push-git-tag",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/push-git-tag"
+            }
         }
     ],
     "files": [
         {
             "path": "tasks/release-notes/v1"
+        },
+        {
+            "path": "tasks/push-git-tag/v1"
         }
     ]
 }
