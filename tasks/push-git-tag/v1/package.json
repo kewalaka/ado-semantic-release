@@ -1,0 +1,25 @@
+{
+  "name": "git-push-tags",
+  "version": "1.1.0",
+  "description": "Push tags to a remote repository",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf *.js",
+    "build": "yarn clean && tsc",
+    "watch": "tsc -w",
+    "test": "echo 'Not yet implemented'"
+  },
+  "author": "Alexander Kharkevich",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^17.0.38",
+    "@types/q": "^1.5.5",
+    "mocha": "^10.0.0",
+    "sync-request": "^6.1.0",
+    "typescript": "4.0.2"
+  }
+}
