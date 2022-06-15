@@ -5,6 +5,8 @@ export interface parameters {
     releaseNotesTemplatePath: string;
     releaseNotesVersion: string;
     setVersionToGitTag: boolean;
+    gitTagPrefix: string;
+    gitTagSuffix: string;
 }
 
 interface authorDetails {

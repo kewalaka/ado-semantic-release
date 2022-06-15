@@ -18,8 +18,10 @@ async function run() {
                 releaseNotesTo: tl.getInput('releaseNotesTo') || 'HEAD',
                 releaseNotesPath: tl.getInput('releaseNotesPath') || 'RELEASE_NOTES.md',
                 releaseNotesTemplatePath: tl.getInput('releaseNotesTemplatePath') || path.join(__dirname, 'template.md.hbs'),
-                releaseNotesVersion: semver.valid(tl.getInput('releaseNotesTo')) || semver.valid(await getLatestTag()) || '1.0.0',
-                setVersionToGitTag: tl.getBoolInput('setVersionGitTag') || false
+                releaseNotesVersion: semver.valid(tl.getInput('releaseNotesTo')) || semver.valid(await getLatestTag()) || '0.0.0',
+                setVersionToGitTag: tl.getBoolInput('setVersionGitTag') || false,
+                gitTagPrefix: tl.getInput('gitTagPrefix') || '',
+                gitTagSuffix: await addDash(tl.getInput('gitTagSuffix')) || '',
             }
         } catch (err) {
             if (err instanceof Error) {
@@ -46,7 +48,7 @@ async function run() {
         }
         // collect all features details
         const releaseNote = {
-            version: parameters.releaseNotesVersion,
+            version: `${parameters.gitTagPrefix}${parameters.releaseNotesVersion}${parameters.gitTagSuffix}`,
             features: await getReleaseNoteBlock(allCommitDetails, commitType.features),
             chore: await getReleaseNoteBlock(allCommitDetails, commitType.chore),
             ci: await getReleaseNoteBlock(allCommitDetails, commitType.ci),
@@ -63,7 +65,8 @@ async function run() {
             releaseNote.version = await calculateVersion(releaseNote.version, 'patch');
         }
         if (parameters.setVersionToGitTag) {
-            await setVersionToGitTag(releaseNote.version);
+            tl.debug(`Setting version ${parameters.gitTagPrefix}${releaseNote.version}${parameters.gitTagSuffix} to git tag`);
+            await setVersionToGitTag(`${parameters.gitTagPrefix}${releaseNote.version}${parameters.gitTagSuffix}`);
         }
         await writeReleaseNote(await renderTemplate(releaseNote, parameters.releaseNotesTemplatePath), parameters.releaseNotesPath);
         tl.TaskResult.Succeeded;
@@ -275,33 +278,18 @@ async function getNotesFrom(): Promise<string> {
     }
 }
 
-async function calculateVersion(version: string, changes: string): Promise<string> {
-    // if version starts with v, remove it
-    if (version.startsWith("v")) {
-        version = version.substring(1, version.length);
-    }
-    // switch over changes, if major bump major, minor bump minor, patch bump patch
-    if (semver.valid(version)) {
-        const semverVersion = semver.parse(version);
-        if (semverVersion != null) {
-            switch (changes) {
-                case "major":
-                    return [++semverVersion.major, "0", "0"].join(".");
-                case "minor":
-                    return [semverVersion.major, ++semverVersion.minor, "0"].join(".");
-                case "patch":
-                    return [semverVersion.major, semverVersion.minor, ++semverVersion.patch].join(".");
-                default:
-                    tl.setResult(tl.TaskResult.Failed, "Unknown change type");
-                    return "";
-            }
-        }
+async function calculateVersion(version: string, changes: "major" | "minor" | "patch"): Promise<string> {
+    tl.debug(`Original version: ${version}`);
+    const calculatedVersion = semver.inc(version, changes);
+    tl.debug(`Calculated version: ${calculatedVersion}`);
+    if (calculatedVersion != null) {
+        return calculatedVersion;
     }
     tl.warning("Invalid version, using default version");
     return "1.0.0";
 }
 
-async function setVersionToGitTag(version:string): Promise<void> {
+async function setVersionToGitTag(version: string): Promise<void> {
     try {
         tl.execSync('git', ['tag', version], execOpts);
     }
@@ -312,6 +300,16 @@ async function setVersionToGitTag(version:string): Promise<void> {
             tl.setResult(tl.TaskResult.Failed, "Unknown error");
         }
     }
+}
+
+// if parameter is not undefined and starts not from "-", add "-" to the beginning and return
+async function addDash(parameter: string | undefined): Promise<string | undefined> {
+    if (parameter != undefined && !parameter.startsWith("-")) {
+        tl.debug(`Adding dash to parameter: ${parameter}`);
+        return `-${parameter}`;
+    }
+    tl.debug(`Parameter is undefined or starts with dash: ${parameter}`);
+    return parameter;
 }
 
 run();

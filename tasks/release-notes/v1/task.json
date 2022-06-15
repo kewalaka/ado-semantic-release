@@ -9,7 +9,7 @@
     "author": "Alexander Kharkevich",
     "version": {
         "Major": 1,
-        "Minor": 1,
+        "Minor": 2,
         "Patch": 0
     },
     "instanceNameFormat": "ReleaseNotes",
@@ -48,6 +48,20 @@
             "label": "Set version to git tag",
             "required": false,
             "helpMarkDown": "Set release version to git tag. If not specified, the version will not be set."
+        },
+        {
+            "name": "gitTagPrefix",
+            "type": "string",
+            "label": "Git tag prefix",
+            "required": false,
+            "helpMarkDown": "The prefix of the git tag. Will be omitted if not specified."
+        },
+        {
+            "name": "gitTagSuffix",
+            "type": "string",
+            "label": "Git tag suffix",
+            "required": false,
+            "helpMarkDown": "The suffix of the git tag. Will be omitted if not specified."
         }
     ],
     "execution": {
