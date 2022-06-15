@@ -18,7 +18,7 @@
             "name": "publishLatestTagOnly",
             "type": "boolean",
             "label": "Publish only latest tag",
-            "required": true,
+            "required": false,
             "helpMarkDown": "Publish only latest tag. If false, all tags will be published"
         },
         {
