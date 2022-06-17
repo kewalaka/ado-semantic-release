@@ -16,6 +16,7 @@ async function run() {
                 value: tl.getInput('value', false),
                 createBackup: tl.getBoolInput('createBackup', false) || false
             }
+            tl.debug(`Parameters: ${JSON.stringify(parameters)}`);
         } catch (err) {
             if (err instanceof Error) {
                 tl.setResult(tl.TaskResult.Failed, err.message);
