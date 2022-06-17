@@ -67,6 +67,30 @@ steps:
     remoteName: origin
 ``` 
 
+## update-yaml
+
+**Description:** Update key:value in the yaml file (e.g. version)
+
+Azure pipelines (minimal allowed parameters):
+```yaml
+steps:
+- task: update-yaml@1
+  displayName: 'Update yaml'
+  filename: Chart.yaml
+  key: version
+```
+
+Azure pipelines (all parameters):
+```yaml
+steps:
+- task: update-yaml@1
+  displayName: 'Update yaml'
+  filename: Chart.yaml
+  key: version
+  value: 3.2.1 # if omitted will use the latest git tag
+  createBackup: true # create a backup of the original file
+```
+
 See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for specification.
 
 ---
