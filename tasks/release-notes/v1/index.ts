@@ -19,7 +19,7 @@ async function run() {
                 releaseNotesPath: tl.getInput('releaseNotesPath') || 'RELEASE_NOTES.md',
                 releaseNotesTemplatePath: tl.getInput('releaseNotesTemplatePath') || path.join(__dirname, 'template.md.hbs'),
                 releaseNotesVersion: semver.valid(tl.getInput('releaseNotesTo')) || semver.valid(await getLatestTag()) || '0.0.0',
-                setVersionToGitTag: tl.getBoolInput('setVersionGitTag') || false,
+                setVersionToGitTag: tl.getBoolInput('setVersionToGitTag') || false,
                 gitTagPrefix: tl.getInput('gitTagPrefix') || '',
                 gitTagSuffix: await addDash(tl.getInput('gitTagSuffix')) || '',
             }
