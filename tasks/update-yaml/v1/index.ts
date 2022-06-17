@@ -19,10 +19,10 @@ async function run() {
             tl.debug(`Parameters: ${JSON.stringify(parameters)}`);
         } catch (err) {
             if (err instanceof Error) {
-                tl.setResult(tl.TaskResult.Failed, err.message);
+                tl.setResult(tl.TaskResult.Failed, `Cannot parse parameters: ${err.message}`);
                 return;
             } else {
-                tl.setResult(tl.TaskResult.Failed, "Unknown error");
+                tl.setResult(tl.TaskResult.Failed, "Cannot parse parameters. Unknown error");
                 return;
             }
         }
@@ -30,9 +30,9 @@ async function run() {
     }
     catch (err) {
         if (err instanceof Error) {
-            tl.setResult(tl.TaskResult.Failed, err.message);
+            tl.setResult(tl.TaskResult.Failed, `Task run failed: ${err.message}`);
         } else {
-            tl.setResult(tl.TaskResult.Failed, "Unknown error");
+            tl.setResult(tl.TaskResult.Failed, "Task run failed. Unknown error");
         }
     }
 }
@@ -48,9 +48,9 @@ async function getLatestTag(): Promise<string | undefined> {
     }
     catch (err) {
         if (err instanceof Error) {
-            tl.setResult(tl.TaskResult.Failed, err.message);
+            tl.setResult(tl.TaskResult.Failed, `Get latest tag failed: ${err.message}`);
         } else {
-            tl.setResult(tl.TaskResult.Failed, "Unknown error");
+            tl.setResult(tl.TaskResult.Failed, "Get latest tag failed. Unknown error");
         }
     }
 }
@@ -80,9 +80,9 @@ async function updateYamlFile(parameters: parameters): Promise<void> {
         fs.writeFileSync(parameters.filename, String(output));
     } catch (err) {
         if (err instanceof Error) {
-            tl.setResult(tl.TaskResult.Failed, err.message);
+            tl.setResult(tl.TaskResult.Failed, `Update YAML file failed: ${err.message}`);
         } else {
-            tl.setResult(tl.TaskResult.Failed, "Unknown error");
+            tl.setResult(tl.TaskResult.Failed, "Update YAML file failed. Unknown error");
         }
     }
 }
