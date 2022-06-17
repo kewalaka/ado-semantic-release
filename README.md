@@ -76,8 +76,9 @@ Azure pipelines (minimal allowed parameters):
 steps:
 - task: update-yaml@1
   displayName: 'Update yaml'
-  filename: Chart.yaml
-  key: version
+  inputs:
+    filename: Chart.yaml
+    key: version
 ```
 
 Azure pipelines (all parameters):
@@ -85,10 +86,11 @@ Azure pipelines (all parameters):
 steps:
 - task: update-yaml@1
   displayName: 'Update yaml'
-  filename: Chart.yaml
-  key: version
-  value: 3.2.1 # if omitted will use the latest git tag
-  createBackup: true # create a backup of the original file
+  inputs:
+    filename: Chart.yaml
+    key: version
+    value: 3.2.1 # if omitted will use the latest git tag
+    createBackup: true # create a backup of the original file
 ```
 
 See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for specification.

@@ -20,7 +20,20 @@ jobs:
       - run: yarn build
         working-directory: tasks/release-notes/v1
       # tasks/release-notes/v1
+      # tasks/push-git-tag/v1
+      - run: yarn install --frozen-lockfile --production
+        working-directory: tasks/push-git-tag/v1
+      - run: yarn build
+        working-directory: tasks/push-git-tag/v1
+      # tasks/push-git-tag/v1
+      # tasks/update-yaml/v1
+      - run: yarn install --frozen-lockfile --production
+        working-directory: tasks/update-yaml/v1
+      - run: yarn build
+        working-directory: tasks/update-yaml/v1
+      # tasks/update-yaml/v1
       - run: tfx extension create
+      - run: ls -lah
       - run: tfx login -u ${URL} -t ${TOKEN}
         env:
           URL: ${{ secrets.URL }}
