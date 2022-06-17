@@ -10,7 +10,7 @@
     "version": {
         "Major": 1,
         "Minor": 1,
-        "Patch": 2
+        "Patch": 3
     },
     "instanceNameFormat": "Push git tag(s)",
     "inputs": [
@@ -30,7 +30,7 @@
         }
     ],
     "execution": {
-        "Node": {
+        "Node10": {
             "target": "index.js"
         }
     }
