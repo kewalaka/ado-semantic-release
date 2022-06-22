@@ -26,6 +26,8 @@ steps:
     setVersionToGitTag: true
     gitTagPrefix: v
     gitTagSuffix: alpha
+    hideSubprocessOutput: true
+    workingDirectory:  $(Build.SourcesDirectory)
 ```
 
 ## push-git-tag task
@@ -65,6 +67,8 @@ steps:
   inputs:
     publishLatestTagOnly: true
     remoteName: origin
+    hideSubprocessOutput: true
+    workingDirectory:  $(Build.SourcesDirectory)
 ``` 
 
 ## update-yaml
@@ -91,6 +95,8 @@ steps:
     key: version
     value: 3.2.1 # if omitted will use the latest git tag
     createBackup: true # create a backup of the original file
+    hideSubprocessOutput: true
+    workingDirectory:  $(Build.SourcesDirectory)
 ```
 
 See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for specification.

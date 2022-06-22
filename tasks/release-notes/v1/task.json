@@ -9,8 +9,8 @@
     "author": "Alexander Kharkevich",
     "version": {
         "Major": 1,
-        "Minor": 2,
-        "Patch": 4
+        "Minor": 3,
+        "Patch": 0
     },
     "instanceNameFormat": "ReleaseNotes",
     "inputs": [
@@ -62,6 +62,20 @@
             "label": "Git tag suffix",
             "required": false,
             "helpMarkDown": "The suffix of the git tag. Will be omitted if not specified."
+        },
+        {
+            "name": "hideSubprocessOutput",
+            "type": "boolean",
+            "label": "Hide subprocess output",
+            "required": false,
+            "helpMarkDown": "Hide subprocess output. Default true"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working directory",
+            "required": false,
+            "helpMarkDown": "Specify the working directory"
         }
     ],
     "execution": {

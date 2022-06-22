@@ -4,7 +4,7 @@ import { parameters } from './interfaces'
 import yaml = require('yaml');
 import fs = require('fs');
 
-const execOpts: tr.IExecSyncOptions = { silent: true };
+let execOpts: tr.IExecSyncOptions;
 
 async function run() {
     try {
@@ -15,7 +15,11 @@ async function run() {
                 key: tl.getInput('key', true) || '',
                 value: tl.getInput('value', false),
                 createBackup: tl.getBoolInput('createBackup', false) || false
-            }
+            };
+            execOpts = {
+                silent: tl.getBoolInput('hideSubprocessOutput') || true,
+                cwd: tl.getInput('workingDirectory')
+            };
             tl.debug(`Parameters: ${JSON.stringify(parameters)}`);
         } catch (err) {
             if (err instanceof Error) {

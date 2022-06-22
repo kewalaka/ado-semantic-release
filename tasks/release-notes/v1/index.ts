@@ -7,7 +7,7 @@ import path = require('path');
 import handlebars = require('handlebars');
 import semver = require('semver');
 
-const execOpts: tr.IExecSyncOptions = { silent: true };
+let execOpts: tr.IExecSyncOptions;
 
 async function run() {
     try {
@@ -22,7 +22,11 @@ async function run() {
                 setVersionToGitTag: tl.getBoolInput('setVersionToGitTag') || false,
                 gitTagPrefix: tl.getInput('gitTagPrefix') || '',
                 gitTagSuffix: await addDash(tl.getInput('gitTagSuffix')) || '',
-            }
+            };
+            execOpts = {
+                silent: tl.getBoolInput('hideSubprocessOutput') || true,
+                cwd: tl.getInput('workingDirectory')
+            };
         } catch (err) {
             if (err instanceof Error) {
                 tl.setResult(tl.TaskResult.Failed, err.message);

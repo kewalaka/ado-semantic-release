@@ -2,7 +2,7 @@ import tl = require('azure-pipelines-task-lib/task');
 import tr = require('azure-pipelines-task-lib/toolrunner');
 import { parameters } from './interfaces'
 
-const execOpts: tr.IExecSyncOptions = { silent: true };
+let execOpts: tr.IExecSyncOptions;
 
 async function run() {
     try {
@@ -11,7 +11,11 @@ async function run() {
             parameters = {
                 publishLatestTagOnly: tl.getBoolInput('publishLatestTagOnly', false) || true,
                 remoteName: tl.getInput('remoteName', false) || 'origin',
-            }
+            };
+            execOpts = {
+                silent: tl.getBoolInput('hideSubprocessOutput') || true,
+                cwd: tl.getInput('workingDirectory')
+            };
         } catch (err) {
             if (err instanceof Error) {
                 tl.setResult(tl.TaskResult.Failed, err.message);

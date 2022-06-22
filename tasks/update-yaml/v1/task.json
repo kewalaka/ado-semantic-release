@@ -9,8 +9,8 @@
     "author": "Alexander Kharkevich",
     "version": {
         "Major": 1,
-        "Minor": 1,
-        "Patch": 5
+        "Minor": 2,
+        "Patch": 0
     },
     "instanceNameFormat": "Update YAML file",
     "inputs": [
@@ -41,6 +41,20 @@
             "label": "Create backup",
             "required": false,
             "helpMarkDown": "Create a backup of the original file"
+        },
+        {
+            "name": "hideSubprocessOutput",
+            "type": "boolean",
+            "label": "Hide subprocess output",
+            "required": false,
+            "helpMarkDown": "Hide subprocess output. Default true"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working directory",
+            "required": false,
+            "helpMarkDown": "Specify the working directory"
         }
     ],
     "execution": {
