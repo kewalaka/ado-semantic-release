@@ -59,6 +59,14 @@ async function getLatestTag(): Promise<string | undefined> {
     }
 }
 
+// update object by defined value with dot notation key
+function set(obj:any, key:string, val:string) {
+    let path: any = key.split(".");
+    while (path.length > 1)
+        obj = obj[path.shift()];
+    return obj[path.shift()] = val;
+}
+
 // update yaml file with new key value pair
 async function updateYamlFile(parameters: parameters): Promise<void> {
     try {
@@ -67,14 +75,14 @@ async function updateYamlFile(parameters: parameters): Promise<void> {
             const latestTag = await getLatestTag();
             if (latestTag != undefined) {
                 tl.debug(`No value provided for key: ${parameters.key}, using latest tag: ${latestTag}`);
-                yamlData[parameters.key] = latestTag;
+                set(yamlData, parameters.key, latestTag)
             } else {
                 tl.debug(`No value provided for key: ${parameters.key}, and no tags found`);
                 tl.setResult(tl.TaskResult.Failed, `No value provided for key: ${parameters.key}, and no tags found`)
             }
         } else {
             tl.debug(`Updating key: ${parameters.key} with value: ${parameters.value}`);
-            yamlData[parameters.key] = parameters.value;
+            set(yamlData, parameters.key, parameters.value)
         }
         const output = new yaml.Document(yamlData);
         console.log(output.toString())
