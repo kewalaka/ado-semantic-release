@@ -2,20 +2,35 @@
 name: validate pull request
 on:
   pull_request:
-    types: ['opened', 'synchronize']
+    types: ["opened", "synchronize"]
 jobs:
   validate:
     name: "run test"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-    - run: yarn global add tfx-cli mocha
-    # tasks/release-notes/v1
-    - run: yarn install --frozen-lockfile
-      working-directory: tasks/release-notes/v1
-    - run: yarn test
-      working-directory: tasks/release-notes/v1
-    # tasks/release-notes/v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn global add tfx-cli mocha
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "10"
+      # tasks/release-notes/v1
+      - run: yarn install --frozen-lockfile
+        working-directory: tasks/release-notes/v1
+      - run: yarn test
+        working-directory: tasks/release-notes/v1
+      # tasks/release-notes/v1
+      # tasks/push-git-tag/v1
+      - run: yarn install --frozen-lockfile
+        working-directory: tasks/push-git-tag/v1
+      - run: yarn test
+        working-directory: tasks/push-git-tag/v1
+      # tasks/push-git-tag/v1
+      # tasks/update-yaml/v1
+      - run: yarn install --frozen-lockfile
+        working-directory: tasks/update-yaml/v1
+      - run: yarn test
+        working-directory: tasks/update-yaml/v1
+    # tasks/update-yaml/v1
