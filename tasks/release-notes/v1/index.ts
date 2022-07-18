@@ -140,18 +140,22 @@ async function getCommitDetails(commit: string): Promise<commitDetails> {
     try {
         const format = '{"tree": "%T", "abbreviated_tree": "%t", "parent": "%P", ' +
             '"abbreviated_parent": "%p", "refs": "%D", "encoding": "%e", ' +
-            '"subject": "%s", "sanitized_subject_line": "%f", "commit_notes": "%N", ' +
+            '"sanitized_subject_line": "%f", "commit_notes": "%N", ' +
             '"verification_flag": "%G?", "signer": "%GS", "signer_key": "%GK", ' +
             '"author": { "name": "%aN", "email": "%aE", "date": "%aD" }, ' +
             '"commiter": { "name": "%cN", "email": "%cE", "date": "%cD" }}';
         const formatBody = '%b';
+        const formatSubject = '%s';
         const commitDetailsRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + format, commit], execOpts);
         const commitBodyRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatBody, commit], execOpts);
+        const commitSubject = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatSubject, commit], execOpts);
         const commitDetailsJson = JSON.parse(commitDetailsRaw.stdout);
         // replace newlines in commit body with \n
         const commitBody = commitBodyRaw.stdout.replace(/\n/g, '\\n');
         // add commit body to commit details
         commitDetailsJson.body = commitBody;
+        // remove quotes from commitSubject.stdout
+        commitDetailsJson.subject = commitSubject.stdout.replace(/\"/g, '');
         return commitDetailsJson;
     }
     catch (err) {
