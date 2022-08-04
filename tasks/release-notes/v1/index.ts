@@ -180,7 +180,7 @@ function getCommitType(subject: string): conventionalCommitDetails {
         let detailsScope = commitTypeMatch.groups.scope;
         let detailsSubject = commitTypeMatch.groups.subject;
         let detailsBreaking = Boolean(commitTypeMatch.groups.breaking);
-        if (!detailsBreaking && subject.includes("BREAKING CHANGE")) {
+        if (!detailsBreaking && subject.toUpperCase().includes("BREAKING CHANGE")) {
             detailsBreaking = true;
         }
         let detailsType = commitTypeMatch.groups.type;
