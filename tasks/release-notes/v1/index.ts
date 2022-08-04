@@ -19,6 +19,7 @@ async function run() {
                 releaseNotesPath: tl.getInput('releaseNotesPath') || 'RELEASE_NOTES.md',
                 releaseNotesTemplatePath: tl.getInput('releaseNotesTemplatePath') || path.join(__dirname, 'template.md.hbs'),
                 releaseNotesVersion: semver.valid(tl.getInput('releaseNotesTo')) || semver.valid(await getLatestTag()) || '0.0.0',
+                normalizeMergeCommit: tl.getBoolInput('normalizeMergeCommit') || false,
                 setVersionToGitTag: tl.getBoolInput('setVersionToGitTag') || false,
                 gitTagPrefix: tl.getInput('gitTagPrefix') || '',
                 gitTagSuffix: await addDash(tl.getInput('gitTagSuffix')) || '',
@@ -48,7 +49,7 @@ async function run() {
         }
         // iterate over allCommitDetails subject and determine commit type
         for (const commit of allCommitDetails) {
-            commit.conventionalCommitDetails = getCommitType(commit.subject);
+            commit.conventionalCommitDetails = getCommitType(commit.subject, parameters.normalizeMergeCommit);
         }
         // collect all features details
         const releaseNote = {
@@ -168,9 +169,17 @@ async function getCommitDetails(commit: string): Promise<commitDetails> {
     }
 }
 
+// check a string for starting by regex and remove match if it does
+function normalizeCommit(subject: string): string {
+    const mergeCommitRegex = /^merged PR \d+:\s*/igm;
+    const match = subject.match(mergeCommitRegex);
+    return match != null ? subject.substring(match[0].length) : subject;
+}
 
 // determine commit type based on conventional commit subject
-function getCommitType(subject: string): conventionalCommitDetails {
+function getCommitType(originalSubject: string, doNormalizeMergeCommit:boolean): conventionalCommitDetails {
+    const subject = doNormalizeMergeCommit ? normalizeCommit(originalSubject) : originalSubject;
+    tl.debug(`Determining commit type for subject: ${subject}`);
     // regex to match commit type
     const commitTypeRegex = /(?<type>\w+)(?<scope>(?:\([^()\r\n]*\)|\()?(?<breaking>!)?)(?<subject>:.*)?/igm;
     // parse subject

@@ -9,8 +9,8 @@
     "author": "Alexander Kharkevich",
     "version": {
         "Major": 1,
-        "Minor": 3,
-        "Patch": 1
+        "Minor": 4,
+        "Patch": 0
     },
     "instanceNameFormat": "ReleaseNotes",
     "inputs": [
@@ -76,6 +76,13 @@
             "label": "Working directory",
             "required": false,
             "helpMarkDown": "Specify the working directory"
+        },
+        {
+            "name": "normalizeMergeCommit",
+            "type": "boolean",
+            "label": "Normalize commit messages (remove 'Merged PR 1234:' from commit message)",
+            "required": false,
+            "helpMarkDown": "Normalize commit messages. Default false"
         }
     ],
     "execution": {

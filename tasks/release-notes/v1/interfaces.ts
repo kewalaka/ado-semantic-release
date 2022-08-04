@@ -4,6 +4,7 @@ export interface parameters {
     releaseNotesPath: string;
     releaseNotesTemplatePath: string;
     releaseNotesVersion: string;
+    normalizeMergeCommit: boolean;
     setVersionToGitTag: boolean;
     gitTagPrefix: string;
     gitTagSuffix: string;
