@@ -28,6 +28,7 @@ steps:
     gitTagSuffix: alpha
     hideSubprocessOutput: true
     workingDirectory:  $(Build.SourcesDirectory)
+    normalizeMergeCommit: true
 ```
 
 ## push-git-tag task
