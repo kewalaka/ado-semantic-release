@@ -150,7 +150,17 @@ async function getCommitDetails(commit: string): Promise<commitDetails> {
         const commitDetailsRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + format, commit], execOpts);
         const commitBodyRaw = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatBody, commit], execOpts);
         const commitSubject = tl.execSync('git', ['show', '--quiet', '--pretty=format:' + formatSubject, commit], execOpts);
-        const commitDetailsJson = JSON.parse(commitDetailsRaw.stdout);
+        tl.debug(`Commit details: ${commitDetailsRaw.stdout}`);
+        const commitDetailsJson = JSON.parse(commitDetailsRaw.stdout
+            .replace(/\\n/g, "\\n")
+            .replace(/\\'/g, "\\'")
+            .replace(/\\"/g, '\\"')
+            .replace(/\\&/g, "\\&")
+            .replace(/\\r/g, "\\r")
+            .replace(/\\t/g, "\\t")
+            .replace(/\\b/g, "\\b")
+            .replace(/\\f/g, "\\f")
+            .replace(/\\/g, " "));
         // replace newlines in commit body with \n
         const commitBody = commitBodyRaw.stdout.replace(/\n/g, '\\n');
         // add commit body to commit details
@@ -177,7 +187,7 @@ function normalizeCommit(subject: string): string {
 }
 
 // determine commit type based on conventional commit subject
-function getCommitType(originalSubject: string, doNormalizeMergeCommit:boolean): conventionalCommitDetails {
+function getCommitType(originalSubject: string, doNormalizeMergeCommit: boolean): conventionalCommitDetails {
     const subject = doNormalizeMergeCommit ? normalizeCommit(originalSubject) : originalSubject;
     tl.debug(`Determining commit type for subject: ${subject}`);
     // regex to match commit type
